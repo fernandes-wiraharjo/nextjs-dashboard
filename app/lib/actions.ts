@@ -61,6 +61,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
         // If a database error occurs, return a more specific error.
         return {
             message: 'Database Error: Failed to Create Invoice.',
+            errors: []
         };
     }
 
@@ -95,7 +96,7 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
             WHERE id = ${id}
         `;
     } catch (error) {
-        return { message: 'Database Error: Failed to Update Invoice.' };
+        return { message: 'Database Error: Failed to Update Invoice.', errors: [] };
     }
    
     revalidatePath('/dashboard/invoices');
@@ -114,11 +115,12 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
         if (error instanceof Error) {
             return {
                 message: `Database Error: Failed to Delete Invoice. ${error.message}`,
-                details: error.stack, // Optional: Include stack trace for debugging
+                errors: error.stack, // Optional: Include stack trace for debugging
             };
         } else {
             return {
                 message: 'An unknown error occurred while deleting the invoice.',
+                errors: []
             };
         }
     }
