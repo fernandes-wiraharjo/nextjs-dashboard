@@ -108,18 +108,10 @@ export async function deleteInvoice(id: string) {
     try {
         await sql`DELETE FROM invoices WHERE id = ${id}`;
         revalidatePath('/dashboard/invoices');
-        return { message: 'Deleted Invoice.' };
+        return;
+        // return { message: 'Deleted Invoice.' };
     } catch (error) {
-        // Narrow the type of the error
-        if (error instanceof Error) {
-            return {
-                message: `Database Error: Failed to Delete Invoice. ${error.message}`,
-                details: error.stack, // Optional: Include stack trace for debugging
-            };
-        } else {
-            return {
-                message: 'An unknown error occurred while deleting the invoice.',
-            };
-        }
+        const message = error instanceof Error ? error.message : 'Unknown error occurred';
+        redirect(`/dashboard/invoices?error=${encodeURIComponent(message)}`);
     }
 }
