@@ -42,8 +42,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
     // If form validation fails, return errors early. Otherwise, continue.
     if (!validatedFields.success) {
         return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Create Invoice.',
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create Invoice.',
         };
     }
 
@@ -60,8 +60,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
     } catch (error) {
         // If a database error occurs, return a more specific error.
         return {
-            message: 'Database Error: Failed to Create Invoice.',
-            errors: []
+            message: 'Database Error: Failed to Create Invoice.' + error,
         };
     }
 
@@ -80,8 +79,8 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
     // If form validation fails, return errors early. Otherwise, continue.
     if (!validatedFields.success) {
         return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Update Invoice.',
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Update Invoice.',
         };
     }
    
@@ -96,7 +95,7 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
             WHERE id = ${id}
         `;
     } catch (error) {
-        return { message: 'Database Error: Failed to Update Invoice.', errors: [] };
+        return { message: 'Database Error: Failed to Update Invoice.' + error };
     }
    
     revalidatePath('/dashboard/invoices');
@@ -115,12 +114,11 @@ export async function updateInvoice(id: string, prevState: State, formData: Form
         if (error instanceof Error) {
             return {
                 message: `Database Error: Failed to Delete Invoice. ${error.message}`,
-                errors: error.stack, // Optional: Include stack trace for debugging
+                details: error.stack, // Optional: Include stack trace for debugging
             };
         } else {
             return {
                 message: 'An unknown error occurred while deleting the invoice.',
-                errors: []
             };
         }
     }
